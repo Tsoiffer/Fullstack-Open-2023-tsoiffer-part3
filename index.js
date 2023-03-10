@@ -27,6 +27,15 @@ let persons = [
 app.get("/api/persons", (request, response) => {
   response.json(persons);
 });
+app.get("/api/persons/:id", (request, response) => {
+  let id = Number(request.params.id);
+  let person = persons.find((person) => person.id === id);
+  if (person) {
+    response.json(person);
+  } else {
+    response.status(404).send({ error: "unknown person" });
+  }
+});
 
 app.get("/info", (request, response) => {
   let cantPersons = persons.length;
