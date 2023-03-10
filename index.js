@@ -36,6 +36,12 @@ app.get("/api/persons/:id", (request, response) => {
     response.status(404).send({ error: "unknown person" });
   }
 });
+app.delete("/api/persons/:id", (request, response) => {
+  let id = Number(request.params.id);
+  persons = persons.filter((person) => person.id !== id);
+  console.log(persons);
+  response.status(204).end();
+});
 
 app.get("/info", (request, response) => {
   let cantPersons = persons.length;
