@@ -22,15 +22,18 @@ let persons = [
     number: "39-23-6423122",
     id: 4,
   },
-  {
-    name: "hola pomi",
-    number: "987",
-    id: 5,
-  },
 ];
 
 app.get("/api/persons", (request, response) => {
   response.json(persons);
+});
+
+app.get("/info", (request, response) => {
+  let cantPersons = persons.length;
+  let actualDate = new Date();
+  response.send(
+    `<p>the guide has info for ${cantPersons} people</p> <p>${actualDate} </p>`
+  );
 });
 
 const PORT = 3001;
