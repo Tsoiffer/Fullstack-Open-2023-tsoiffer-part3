@@ -40,6 +40,14 @@ app.post("/api/persons", (request, response) => {
     number: body.number,
     id: generateId(),
   };
+  if (!newPerson.name || !newPerson.number) {
+    response.status(409).send({ error: "missing name or phone" });
+  }
+  if (persons.some((person) => newPerson.name === person.name)) {
+    response
+      .status(409)
+      .send({ error: "this name already exist in the guide" });
+  }
   persons = persons.concat(newPerson);
   console.log(persons);
   response.json(newPerson);
