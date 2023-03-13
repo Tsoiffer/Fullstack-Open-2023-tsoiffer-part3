@@ -1,8 +1,24 @@
 const express = require("express");
 var morgan = require("morgan");
 const app = express();
+morgan.token("bodyPost", function getId(req) {
+  return req.id;
+});
 
-app.use(morgan("tiny"));
+app.use(
+  morgan(function (tokens, req, res) {
+    return [
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, "content-length"),
+      "-",
+      tokens["response-time"](req, res),
+      "ms",
+      JSON.stringify(req.body),
+    ].join(" ");
+  })
+);
 
 app.use(express.json());
 let persons = [
@@ -52,7 +68,6 @@ app.post("/api/persons", (request, response) => {
       .send({ error: "this name already exist in the guide" });
   }
   persons = persons.concat(newPerson);
-  console.log(persons);
   response.json(newPerson);
 });
 app.get("/api/persons/:id", (request, response) => {
@@ -67,7 +82,6 @@ app.get("/api/persons/:id", (request, response) => {
 app.delete("/api/persons/:id", (request, response) => {
   let id = Number(request.params.id);
   persons = persons.filter((person) => person.id !== id);
-  console.log(persons);
   response.status(204).end();
 });
 
