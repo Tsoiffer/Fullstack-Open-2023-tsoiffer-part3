@@ -4,4 +4,4 @@ Resolucion de ejercicios de la parte 3 de Fullstack Open
 
 ## Despliegue Phonoguide
 
-Puede ver la aplicación desplegada en [este link](https://fullstack-open-phonoguide.onrender.com/)
+Aplicación desplegada en [este link](https://fullstack-open-phonoguide.onrender.com/)
