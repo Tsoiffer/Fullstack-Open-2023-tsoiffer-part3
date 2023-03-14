@@ -1,6 +1,9 @@
 const express = require("express");
 var morgan = require("morgan");
+const cors = require("cors");
 const app = express();
+app.use(cors());
+app.use(express.static("build"));
 morgan.token("bodyPost", function getId(req) {
   return req.id;
 });
@@ -84,6 +87,12 @@ app.delete("/api/persons/:id", (request, response) => {
   persons = persons.filter((person) => person.id !== id);
   response.status(204).end();
 });
+app.put("/api/persons/:id", (request, response) => {
+  let id = Number(request.params.id);
+  let person = persons.find((person) => person.id === id);
+  person.number = request.body.number;
+  response.json(person);
+});
 
 app.get("/info", (request, response) => {
   let cantPersons = persons.length;
@@ -93,7 +102,7 @@ app.get("/info", (request, response) => {
   );
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
