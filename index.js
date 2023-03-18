@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const Person = require("./models/persons");
 var morgan = require("morgan");
@@ -25,35 +26,7 @@ app.use(
 );
 
 app.use(express.json());
-/*
-let persons = [
-  {
-    name: "Arto Hellas",
-    number: "040-123456",
-    id: 1,
-  },
-  {
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-    id: 2,
-  },
-  {
-    name: "Dan Abramov",
-    number: "12-43-234345",
-    id: 3,
-  },
-  {
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-    id: 4,
-  },
-];
 
-const generateId = () => {
-  const maxId = 10000;
-  return Math.floor(Math.random() * maxId);
-};
-*/
 app.get("/api/persons", (request, response) => {
   Person.find({}).then((result) => {
     response.json(result);
@@ -118,7 +91,7 @@ app.get("/info", (request, response) => {
   );
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
