@@ -10,9 +10,6 @@ const password = process.argv[2];
 const dataBase = "phonoguide-db";
 const url = `mongodb://tsoiffer:${password}@ac-m3chx85-shard-00-00.1go69cb.mongodb.net:27017,ac-m3chx85-shard-00-01.1go69cb.mongodb.net:27017,ac-m3chx85-shard-00-02.1go69cb.mongodb.net:27017/${dataBase}?ssl=true&replicaSet=atlas-96qy2k-shard-0&authSource=admin&retryWrites=true&w=majority`;
 
-//mongodb+srv://tsoiffer:<password>@tsoiffercluster.1go69cb.mongodb.net/?retryWrites=true&w=majority
-//`mongodb://tsoiffer:${password}@ac-m3chx85-shard-00-00.1go69cb.mongodb.net:27017,ac-m3chx85-shard-00-01.1go69cb.mongodb.net:27017,ac-m3chx85-shard-00-02.1go69cb.mongodb.net:27017/?ssl=true&replicaSet=atlas-96qy2k-shard-0&authSource=admin&retryWrites=true&w=majority`;
-
 mongoose.connect(url);
 
 const noteSchema = new mongoose.Schema({

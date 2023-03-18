@@ -1,4 +1,5 @@
 const express = require("express");
+const Person = require("./models/persons");
 var morgan = require("morgan");
 const cors = require("cors");
 const app = express();
@@ -24,6 +25,7 @@ app.use(
 );
 
 app.use(express.json());
+/*
 let persons = [
   {
     name: "Arto Hellas",
@@ -51,36 +53,50 @@ const generateId = () => {
   const maxId = 10000;
   return Math.floor(Math.random() * maxId);
 };
-
+*/
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
+  Person.find({}).then((result) => {
+    response.json(result);
+  });
 });
 app.post("/api/persons", (request, response) => {
   const body = request.body;
-  const newPerson = {
+  const newPerson = new Person({
     name: body.name,
     number: body.number,
-    id: generateId(),
-  };
+  });
   if (!newPerson.name || !newPerson.number) {
     response.status(409).send({ error: "missing name or phone" });
   }
-  if (persons.some((person) => newPerson.name === person.name)) {
+
+  /*
+  //VER COMO ENCONTAR UN NOMBRE REPETIDO SIN LLAMAR TODA LA LISTA
+  
+  if (newPerson.some((person) => newPerson.name === person.name)) {
     response
       .status(409)
       .send({ error: "this name already exist in the guide" });
   }
-  persons = persons.concat(newPerson);
-  response.json(newPerson);
+   */
+  newPerson.save().then((result) => {
+    console.log("new person added");
+    response.json(newPerson);
+  });
 });
 app.get("/api/persons/:id", (request, response) => {
-  let id = Number(request.params.id);
-  let person = persons.find((person) => person.id === id);
-  if (person) {
-    response.json(person);
-  } else {
-    response.status(404).send({ error: "unknown person" });
-  }
+  let id = request.params.id;
+  Person.findById(id)
+    .then((person) => {
+      if (person) {
+        response.json(person);
+      } else {
+        response.status(404).send({ error: "unknown person" });
+      }
+    })
+    .catch((error) => {
+      console.log("error searching:", error.message);
+      response.status(404).send({ error: "unknown person" });
+    });
 });
 app.delete("/api/persons/:id", (request, response) => {
   let id = Number(request.params.id);
