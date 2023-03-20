@@ -67,10 +67,7 @@ app.get("/api/persons/:id", (request, response) => {
 				response.status(404).send({ error: "unknown person" });
 			}
 		})
-		.catch((error) => {
-			console.log("error searching:", error.message);
-			response.status(404).send({ error: "unknown person" });
-		});
+		.catch((error) => next(error));
 });
 app.delete("/api/persons/:id", (request, response) => {
 	let id = request.params.id;
@@ -99,3 +96,15 @@ const PORT = process.env.PORT;
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
 });
+
+const errorHandler = (error, request, response, next) => {
+	console.error(error.message);
+
+	if (error.name === "CastError") {
+		return response.status(400).send({ error: "malformatted id" });
+	}
+
+	next(error);
+};
+
+app.use(errorHandler);
