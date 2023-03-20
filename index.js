@@ -33,7 +33,7 @@ app.get("/api/persons", (request, response) => {
 		response.json(result);
 	});
 });
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
 	const body = request.body;
 	const newPerson = new Person({
 		name: body.name,
@@ -43,10 +43,13 @@ app.post("/api/persons", (request, response) => {
 		response.status(409).send({ error: "missing name or phone" });
 	}
 
-	newPerson.save().then((result) => {
-		console.log("new person added");
-		response.json(newPerson);
-	});
+	newPerson
+		.save()
+		.then((result) => {
+			console.log("new person added");
+			response.json(newPerson);
+		})
+		.catch((error) => next(error));
 });
 app.get("/api/persons/:id", (request, response, next) => {
 	let id = request.params.id;
@@ -99,6 +102,8 @@ const errorHandler = (error, request, response, next) => {
 
 	if (error.name === "CastError") {
 		return response.status(400).send({ error: "malformatted id" });
+	} else if (error.name === "ValidationError") {
+		return response.status(400).json({ error: error.message });
 	}
 
 	next(error);
