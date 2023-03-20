@@ -45,7 +45,7 @@ app.post("/api/persons", (request, response, next) => {
 
 	newPerson
 		.save()
-		.then((result) => {
+		.then(() => {
 			console.log("new person added");
 			response.json(newPerson);
 		})
@@ -66,7 +66,7 @@ app.get("/api/persons/:id", (request, response, next) => {
 app.delete("/api/persons/:id", (request, response, next) => {
 	let id = request.params.id;
 	Person.findByIdAndRemove(id)
-		.then((result) => {
+		.then(() => {
 			response.status(204).end();
 		})
 		.catch((error) => next(error));
@@ -85,13 +85,16 @@ app.put("/api/persons/:id", (request, response, next) => {
 });
 
 app.get("/info", (request, response) => {
-	let cantPersons = persons.length;
-	let actualDate = new Date();
-	response.send(
-		`<p>the guide has info for ${cantPersons} people</p> <p>${actualDate} </p>`
-	);
+	Person.find({}).then((result) => {
+		let cantPersons = result.length;
+		let actualDate = new Date();
+		response.send(
+			`<p>the guide has info for ${cantPersons} people</p> <p>${actualDate} </p>`
+		);
+	});
 });
 
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
