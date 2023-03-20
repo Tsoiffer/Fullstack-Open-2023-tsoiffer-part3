@@ -13,3 +13,12 @@ GET http://localhost:3001/api/persons/
 
 ###
 GET http://localhost:3001/api/persons/6417b100dbfc4b850b83f2f0
+
+###
+PUT http://localhost:3001/api/persons/6417b100dbfc4b850b83f2f0
+content-type: application/json
+
+{
+    "name": "cambio",
+    "number": "777777"
+}

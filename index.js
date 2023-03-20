@@ -43,21 +43,12 @@ app.post("/api/persons", (request, response) => {
 		response.status(409).send({ error: "missing name or phone" });
 	}
 
-	/*
-  //VER COMO ENCONTAR UN NOMBRE REPETIDO SIN LLAMAR TODA LA LISTA
-  
-  if (newPerson.some((person) => newPerson.name === person.name)) {
-    response
-      .status(409)
-      .send({ error: "this name already exist in the guide" });
-  }
-   */
 	newPerson.save().then((result) => {
 		console.log("new person added");
 		response.json(newPerson);
 	});
 });
-app.get("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response, next) => {
 	let id = request.params.id;
 	Person.findById(id)
 		.then((person) => {
@@ -69,7 +60,7 @@ app.get("/api/persons/:id", (request, response) => {
 		})
 		.catch((error) => next(error));
 });
-app.delete("/api/persons/:id", (request, response) => {
+app.delete("/api/persons/:id", (request, response, next) => {
 	let id = request.params.id;
 	Person.findByIdAndRemove(id)
 		.then((result) => {
@@ -77,11 +68,17 @@ app.delete("/api/persons/:id", (request, response) => {
 		})
 		.catch((error) => next(error));
 });
-app.put("/api/persons/:id", (request, response) => {
-	let id = Number(request.params.id);
-	let person = persons.find((person) => person.id === id);
-	person.number = request.body.number;
-	response.json(person);
+app.put("/api/persons/:id", (request, response, next) => {
+	let id = request.params.id;
+	const person = {
+		name: request.body.name,
+		number: request.body.number,
+	};
+	Person.findByIdAndUpdate(id, person, { new: true })
+		.then((updatedPerson) => {
+			response.json(updatedPerson);
+		})
+		.catch((error) => next(error));
 });
 
 app.get("/info", (request, response) => {
